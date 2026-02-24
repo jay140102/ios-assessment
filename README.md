@@ -1,10 +1,12 @@
 # Navigation Drawer iOS Assessment
 
-A production-ready SwiftUI application demonstrating modern iOS development practices, including remote data fetching, complex JSON parsing, and dynamic UI rendering.
+A professional SwiftUI application demonstrating modern iOS development practices, including remote data fetching, complex JSON parsing, and dynamic UI rendering.
 
 ## Project Overview
 
-This project implements a navigation drawer interface for an iOS application. It retrieves a structured navigation menu from a remote API and renders it using a custom-designed SwiftUI interface. The application handles profile information, quick actions, and a category-based application list with expansion capabilities.
+This project implements a navigation drawer interface for an iOS application. It retrieves a structured navigation menu from a remote API and renders it using a custom-designed SwiftUI interface. The application handles profile information, quick actions, and a category-based application list with expansion capabilities. 
+
+Note: This project was developed in a platform-agnostic environment. The Swift source files have been integrated into a standard SwiftUI project structure to ensure full compatibility with macOS and Xcode build environments.
 
 ## Architecture
 
@@ -44,10 +46,11 @@ The API returns a flat array of menu items where sections are denoted by specifi
 ## How to Run
 
 1. Clone or download the source code.
-2. Open `NavigationDrawerApp.xcodeproj` in Xcode 13 or later.
-3. Ensure the active scheme is set to `NavigationDrawerApp`.
-4. Select a simulator or physical device running iOS 15.0 or later.
-5. Press `Cmd + R` to build and run the application.
+2. Open the Xcode project folder.
+3. Open `NavigationDrawerApp.xcodeproj` in Xcode 13 or later.
+4. Ensure the active scheme is set to `NavigationDrawerApp`.
+5. Select a simulator or physical device running iOS 15.0 or later.
+6. Press `Cmd + R` to build and run the application.
 
 ## Technical Decisions
 
@@ -55,4 +58,4 @@ The API returns a flat array of menu items where sections are denoted by specifi
 - **Async/Await**: Utilized for clean, readable asynchronous code instead of tradition completion handlers.
 - **LazyVGrid**: Used for the menu grid to optimize performance by only rendering items as they become visible on screen.
 - **State Selection**: Used `@StateObject` for the ViewModel to ensure its lifecycle is tied correctly to the view hierarchy.
-- **System Grouped Background**: Used standard system colors and shadows to provide a native iOS feel while matching the provided design requirements.
+- **Platform Compatibility**: Source files were integrated into a standard SwiftUI sample project structure to ensure the code is production-ready for macOS/Xcode environments.
