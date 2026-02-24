@@ -1,164 +1,58 @@
-# iOSKickstart
-An iOS app boilerplate generator built with SwiftUI. This tool is designed for creating new iOS apps by taking configuration on command line, with a basic screen flows: Splash > Authorization/Login-SignUp > User Details > Terms & Conditions > Onboarding (Carousel) > Main Tab Screens. These screens use dummy content. Adding new screens or deleting existing ones can be easily managed, and the app code follows the idiomatic swift & iOS guidelines.
+# Navigation Drawer iOS Assessment
 
-## Get Started
+A production-ready SwiftUI application demonstrating modern iOS development practices, including remote data fetching, complex JSON parsing, and dynamic UI rendering.
 
- **Just use one command and create new iOS App**
-   
-```
+## Project Overview
 
- bash <(curl -fsSL "https://raw.githubusercontent.com/shurutech/iOSKickstart/main/create_swift_app.sh") -i
-    
-```
+This project implements a navigation drawer interface for an iOS application. It retrieves a structured navigation menu from a remote API and renders it using a custom-designed SwiftUI interface. The application handles profile information, quick actions, and a category-based application list with expansion capabilities.
 
-   - Copy the above command and paste into terminal.
-   - This process will prompt you for input, such as 
-     - App's name
-     - Whether a sidebar is required (y for yes or n for no)
-     - The number of tabs needed in the created app (between 2 to 5)
-     - Whether the Terms and Conditions and Onboarding screens are required.
-     - Additional language support(localization) in app is required or not
-     - Dark/light mode feature in settings screen is required or not
-   - New app will be created in Desktop folder
+## Architecture
 
- ## Demo Video
+The project follows the Model-View-ViewModel (MVVM) design pattern to ensure a clean separation of concerns and testability.
 
+- **Models**: Defines the data structures (`NavigationResponse`, `MenuItem`) and conforms to `Codable` for seamless JSON mapping.
+- **Views**: SwiftUI views (`ContentView`) responsible for layout and styling. They observe the ViewModel for state changes.
+- **ViewModels**: `DrawerViewModel` manages the application state, business logic, and data transformation for the UI.
+- **Networking**: `APIService` handles the data fetching layer using `URLSession` and async/await syntax.
 
-https://github.com/shurutech/iOSKickstart/assets/127201055/4eb34ee0-f1c0-419a-8055-61cd0e2902ff
+## Technical Implementation
 
+### API Handling
 
-<details>
-  <summary>Requirements:</summary>
-   
-  - Xcode 15+
-  - MacOS
-  - Basic iOS development knowledge
+The network layer uses `URLSession` with the modern `async/await` concurrency model. Error handling is implemented via a custom `APIError` enum to manage scenarios such as invalid URLs, network connectivity issues, and decoding failures.
 
-</details>  
+### JSON Parsing
 
-<details>
-  <summary>Post App Creation</summary>
+Data is parsed from a complex, nested JSON structure using the `Codable` protocol. Custom `CodingKeys` are utilized to map snake_case API response keys to camelCase Swift properties, maintaining idiomatic Swift naming conventions throughout the codebase.
 
-  After creating your app, follow these steps:
- 
- - Open the newly created app in Xcode and check the Configuration Folder. Update the values of variables such as APP_NAME, APP_BUNDLE_ID, and BASE_URL in the Debug and Release configuration files as per your project. Note that different APP_BUNDLE_IDs are used for debug and release modes. To create a single app for both modes, ensure both bundle IDs are the same.
- - Update Launcher icon and Splash logo as per App display. Icons and images can be updated from Assets file located in Resources folder.
- - GoogleService-Info.plist Update: v0.0.2 has added feature of crashlytics and analytics with integration of firebase SDK. So you need your registered on firebase. Update values of GoogleService-Info.plist with your app's configuration.
- - Dummy-Use&Delete Folder: This folder contains example files used in TabScreens and for API flow use cases. For networking or API use cases, the Open Weather API is utilized for fetching weather data in the app. Use these files for reference, then delete them later.
+### Section Extraction Logic
 
-</details>  
+The API returns a flat array of menu items where sections are denoted by specific item types and labels. The `DrawerViewModel` implements logic to:
+- Identify section headers (e.g., "APPS", "HELP & MORE").
+- Dynamically extract items belonging to each section based on their position in the array relative to headers.
+- Filter specific utility items like "Messages", "Notifications", "Rate Us", and "Sign Out" for specialized placement in the UI.
 
-## New Features (v0.0.2)
+## Folder Structure
 
-- **UserDetails Screen**: Added UserDetails screen where users can provide details like name, country, date of birth, gender, language, etc. These details can be modified from the Settings screen.
+- `NavigationDrawerApp/`
+  - `NavigationDrawerAppApp.swift`: Application entry point.
+  - `ContentView.swift`: Main UI implementation including layout components.
+  - `DrawerViewModel.swift`: State management and business logic.
+  - `NavigationResponse.swift`: Data models and Codable structures.
+  - `APIService.swift`: Singleton network service for API communication.
 
-- **Dark/Light Mode Toggler**: Added a dark/light mode toggler in the Settings screen to allow users to switch between dark and light modes.
+## How to Run
 
-- **Localization Support**: Added localization support with Hindi, Spanish, French, Chinese, and Arabic languages.
+1. Clone or download the source code.
+2. Open `NavigationDrawerApp.xcodeproj` in Xcode 13 or later.
+3. Ensure the active scheme is set to `NavigationDrawerApp`.
+4. Select a simulator or physical device running iOS 15.0 or later.
+5. Press `Cmd + R` to build and run the application.
 
-- **Crashlytics and Analytics with Firebase**: Integrated Crashlytics and analytics support using Firebase for improved app monitoring and analytics.
+## Technical Decisions
 
-  > **Note**: Before using Firebase services, you need to create your Firebase iOS app and update the values in the GoogleService-Info.plist file with your Firebase project's configuration.
-
-
-## Next Steps/Features
-We plan to continue building after the initial release and look forward to the feedback from the community. As of now we have following features planned out for next releases.
-- Add different authentication methods like auth0, supabase, custom api and allow developers to select one from CLI as preferred
-- Accept main tab names and icons from CLI
-- Provide ability to choose primary and seconday app theme colors
-- Add different chat support tool integrations and ability to select one from CLI
-- Add different payment provider integrations and ability to select one from CLI
-- Make the app template more generic based on developers feedback
-
-## Contribution Guidelines
-
-Thank you for your interest in contributing to our iOSKickstart project! We value the contributions of each developer and encourage you to share your ideas, improvements, and fixes with us. To ensure a smooth collaboration process, please follow these guidelines.
-
-Before you begin:
-- Make sure you have a GitHub account.
-- Familiarize yourself with the project by reading the README, exploring the issues, and understanding the app's architecture and coding standards.
-
-## How to Contribute
-
-### Reporting Bugs
-
-Before reporting a bug, please:
-- Check the issue tracker to ensure the bug hasn't already been reported.
-- If the issue is unreported, create a new issue, providing:
-  - A clear title and description.
-  - Steps to reproduce the bug.
-  - Expected behavior and what actually happened.
-  - Any relevant error messages or screenshots.
-
-### Suggesting Enhancements
-
-We love to receive suggestions for enhancements! Please:
-- First, check if the enhancement has already been suggested.
-- If not, open a new issue, describing the enhancement and why it would be beneficial.
-
-### Pull Requests
-
-Ready to contribute code? Follow these steps:
-1. **Fork the repository** - Create your own fork of the project.
-2. **Create a new branch** for your changes - Keep your branch focused on a single feature or bug fix.
-3. **Commit your changes** - Write clear, concise commit messages that explain your changes.
-4. **Follow the coding standards** - Ensure your code adheres to the coding standards used throughout the project.
-5. **Write tests** - If possible, write tests to cover the new functionality or bug fix.
-7. **Submit a pull request** - Provide a clear description of the problem and solution. Include the relevant issue number if applicable.
-
-## Conduct
-
-We are committed to providing a welcoming and inspiring community for all. By participating in this project, you are expected to uphold our Code of Conduct, which promotes respect and collaboration.
-   
-## App Folders & Files
-   APP ENTRY POINT:
- - LaunchApp.swift: The starting point of the app when the user clicks the app icon. It navigates to the first view using RootCoordinator, without any heavy components.
- 
- **Screens Folder**
- 
- - RootCoordinator: Determines the flow of screens (Splash, Authorization, Terms and Conditions, Onboarding, Main Tabs). It uses RootViewModel for logic, handling the walkthrough flow once and saving state in UserPreferences (local storage).
-
- - MainTabCoordinator: Contains all main tabs (e.g., Tab1, Tab2...). Each tab has its own content and screens (e.g., Tab1Screen, Tab2Screen...). Includes a side menu bar accessible from the top-left menu button. https://medium.com/geekculture/side-menu-in-ios-swiftui-9fe1b69fc487
-    
-**ReusableViews Folder**
-  - Contains all subviews or components used in multiple screens, e.g., PrimaryButtonView or a list's single item view.
-  
-**Managers Folder**
-  - Contains Manager classes for handling specific app-level functions, e.g., AuthenticationManager for managing Auth0 functionality (login/signup/logout). 
-
-## NETWORKING:
-
-**Network Folder**
- - Utilizes the Alamofire package for REST API requests. The NetworkManager class handles API requests, including success and error management. All the API endpoints are included in APIEndpoints enum.
- 
-**Service Folder**
-  - Contains classes for specific services making API calls, e.g., UserService for user-related operations. Services call the network class's request method and are used in screen ViewModel classes.
-  
-**Models Folder**
-  - Contains data structures for mapping JSON data used with API requests and responses.
-  
-
-## APP UTILITY:
- 
- **Utils Folder**
- - Contains utility classes/structs for app-level use, such as Fonts, Colors, Constants, etc. Includes KeyChainStorage for encrypted local data storage and UserPreferences for unencrypted local storage.
-
- **Resources Folder**
- - All the resource files like images, fonts, strings are kept in this folder.
- - Images/icons for different device resolutions, App icon, colors for different themes like Dark/Light are managed in Assets file. 
- - Localizable have static Texts used in app. Also used to create static app strings in different languages.
- 
-
- **Configuration Folder**
- - Contains app configuration files for Debug and Release modes, including environment-specific variables. These variables are mapped in the Info.plist file, allowing changes to app name, icon, etc., for different configurations.
- - For more details on managing Xcode configurations: https://www.appcoda.com/xcconfig-guide/
-
-
-## Questions?
-
-Feel free to contact the project maintainers if you have any questions or need further guidance on contributing.
-
-Thank you for contributing to our iOSKickstart project! Your efforts help make our project better for everyone.
-
-## License
-iOSKickstart is [MIT licensed](https://github.com/shurutech/iOSKickstart/blob/main/LICENSE).
+- **No Third-Party Libraries**: The project relies exclusively on Apple's first-party frameworks (SwiftUI, Foundation) to minimize binary size and dependency overhead.
+- **Async/Await**: Utilized for clean, readable asynchronous code instead of tradition completion handlers.
+- **LazyVGrid**: Used for the menu grid to optimize performance by only rendering items as they become visible on screen.
+- **State Selection**: Used `@StateObject` for the ViewModel to ensure its lifecycle is tied correctly to the view hierarchy.
+- **System Grouped Background**: Used standard system colors and shadows to provide a native iOS feel while matching the provided design requirements.
