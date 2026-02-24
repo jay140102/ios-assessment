@@ -4,6 +4,11 @@ import Foundation
 final class DrawerViewModel: ObservableObject {
     @Published var navigationResult: NavigationResult?
     @Published var appItems: [MenuItem] = []
+    @Published var helpItems: [MenuItem] = []
+    @Published var quickActions: [MenuItem] = []
+    @Published var rateUsItem: MenuItem?
+    @Published var signOutItem: MenuItem?
+    
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var showAllApps: Bool = false
@@ -19,7 +24,7 @@ final class DrawerViewModel: ObservableObject {
         do {
             let response = try await APIService.shared.fetchNavigation()
             navigationResult = response.result
-            appItems = extractAppsSection(from: response.result.menus)
+            parseMenus(response.result.menus)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -27,25 +32,42 @@ final class DrawerViewModel: ObservableObject {
         isLoading = false
     }
 
-    private func extractAppsSection(from menus: [MenuItem]) -> [MenuItem] {
-        var collecting = false
-        var result: [MenuItem] = []
-
+    private func parseMenus(_ menus: [MenuItem]) {
+        var currentSection: String = ""
+        var tempApps: [MenuItem] = []
+        var tempHelp: [MenuItem] = []
+        var tempQuick: [MenuItem] = []
+        
         for item in menus {
-            if item.type == 0 && item.label == "APPS" {
-                collecting = true
+            if item.type == 0 {
+                currentSection = item.label
                 continue
             }
-            if collecting {
-                if item.type == 0 {
-                    break
-                }
-                if item.type == 1 {
-                    result.append(item)
-                }
+            
+            if item.label == "Messages" || item.label == "Notifications" {
+                tempQuick.append(item)
+                continue
+            }
+            
+            if item.label == "Rate Us" {
+                rateUsItem = item
+                continue
+            }
+            
+            if item.label == "Sign Out" {
+                signOutItem = item
+                continue
+            }
+
+            if currentSection == "APPS" {
+                tempApps.append(item)
+            } else if currentSection == "HELP & MORE" {
+                tempHelp.append(item)
             }
         }
-
-        return result
+        
+        self.appItems = tempApps
+        self.helpItems = tempHelp
+        self.quickActions = tempQuick
     }
 }
